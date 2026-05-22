@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mapa Mental Interativo — Vygotsky & Skinner</title>
+<style>
+  :root {
+    --verde1: #14532d; --verde2: #166534; --verde3: #15803d; --verde4: #22c55e;
+    --verdeSoft: #f0fdf4; --verdeSoft2: #dcfce7;
+    --skinner: #f59e0b; --skinnerDk: #b45309; --skinnerSoft: #fff7ed;
+    --vigotski: #8b5cf6; --vigotskiDk: #6d28d9; --vigotskiSoft: #f5f3ff;
+    --conv: #15803d; --div: #ea580c;
+    --text: #1f2937; --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(160deg, #0b3d24 0%, #14532d 100%);
+    color: var(--text); min-height: 100vh;
+  }
+  header {
+    text-align: center; padding: 1.4rem 1rem 0.6rem; color: #fff;
+  }
+  header h1 { font-size: clamp(1.4rem, 3vw, 2.1rem); }
+  header p { opacity: 0.85; font-size: 0.95rem; margin-top: 0.3rem; }
+  .legenda-top {
+    display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
+    margin: 0.8rem 0 0.4rem; font-size: 0.85rem; color: #fff;
+  }
+  .legenda-top span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .chip { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+  .wrap { display: grid; grid-template-columns: 1fr 380px; gap: 1rem; padding: 0.8rem 1.2rem 2rem; max-width: 1500px; margin: 0 auto; }
+
+  /* Mapa */
+  .mapa-box {
+    background: rgba(255,255,255,0.04); border-radius: 16px; padding: 0.5rem;
+    position: relative; overflow-x: auto;
+  }
+  .mapa {
+    position: relative; width: 1100px; height: 780px; margin: 0 auto;
+  }
+  svg.linhas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .node {
+    position: absolute; transform: translate(-50%, -50%);
+    border: none; border-radius: 14px; cursor: pointer;
+    padding: 0.55rem 0.8rem; font-size: 0.84rem; font-weight: 600;
+    color: #fff; max-width: 190px; text-align: center; line-height: 1.25;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25); transition: transform 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+  }
+  .node:hover, .node:focus, .node.ativo {
+    transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 8px 22px rgba(0,0,0,0.4);
+    outline: 3px solid #fff;
+  }
+  .node.center {
+    background: #fff; color: var(--verde1); font-size: 1.05rem; font-weight: 800;
+    max-width: 220px; padding: 1rem 1.1rem; border-radius: 50%;
+    width: 180px; height: 180px; display: flex; align-items: center; justify-content: center;
+  }
+  .node.conv { background: linear-gradient(135deg, var(--verde3), var(--verde2)); }
+  .node.div { background: linear-gradient(135deg, var(--div), #c2410c); }
+
+  /* Painel de detalhes */
+  .painel {
+    background: #fff; border-radius: 16px; padding: 1.3rem 1.4rem;
+    align-self: start; position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .painel .badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 0.25rem 0.7rem; border-radius: 999px; margin-bottom: 0.6rem;
+  }
+  .painel .badge.conv { background: var(--verdeSoft2); color: var(--verde2); }
+  .painel .badge.div { background: #ffedd5; color: var(--div); }
+  .painel h2 { font-size: 1.3rem; color: var(--verde1); margin-bottom: 0.6rem; line-height: 1.2; }
+  .painel .resumo { font-size: 0.95rem; margin-bottom: 1rem; color: var(--text); }
+  .quote {
+    border-radius: 8px; padding: 0.7rem 0.85rem; margin-bottom: 0.7rem; font-size: 0.86rem; line-height: 1.45;
+  }
+  .quote .src { font-weight: 700; font-size: 0.74rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 0.25rem; }
+  .quote.video { background: #eff6ff; border-left: 4px solid #2563eb; }
+  .quote.video .src { color: #1d4ed8; }
+  .quote.texto { background: var(--verdeSoft); border-left: 4px solid var(--verde3); }
+  .quote.texto .src { color: var(--verde2); }
+  .lado {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.8rem;
+  }
+  .lado .box { border-radius: 8px; padding: 0.6rem 0.7rem; font-size: 0.82rem; line-height: 1.4; }
+  .lado .box.v { background: var(--vigotskiSoft); border-top: 4px solid var(--vigotski); }
+  .lado .box.s { background: var(--skinnerSoft); border-top: 4px solid var(--skinner); }
+  .lado .box h4 { font-size: 0.82rem; margin-bottom: 0.3rem; }
+  .lado .box.v h4 { color: var(--vigotskiDk); }
+  .lado .box.s h4 { color: var(--skinnerDk); }
+  .painel .dica-inicial { color: var(--muted); font-style: italic; font-size: 0.9rem; }
+
+  @media (max-width: 1000px) {
+    .wrap { grid-template-columns: 1fr; }
+    .painel { position: static; max-height: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Mapa Mental Interativo</h1>
+  <p>Vygotsky &amp; Skinner — passe o mouse ou toque em cada conceito para ampliar a explicação e ver os trechos do vídeo e do texto</p>
+  <div class="legenda-top">
+    <span><span class="chip" style="background:#fff;"></span> Núcleo</span>
+    <span><span class="chip" style="background:#15803d;"></span> Convergências</span>
+    <span><span class="chip" style="background:#ea580c;"></span> Divergências</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="mapa-box">
+    <div class="mapa" id="mapa">
+      <svg class="linhas" id="linhas" viewBox="0 0 1100 780" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+
+  <aside class="painel" id="painel">
+    <span class="badge conv" id="p-badge">Comece aqui</span>
+    <h2 id="p-titulo">Vygotsky &amp; Skinner</h2>
+    <p class="dica-inicial" id="p-dica">Clique (ou passe o mouse) em qualquer ramo do mapa para ver a explicação detalhada com os trechos exatos do vídeo e do texto.</p>
+    <div id="p-conteudo"></div>
+  </aside>
+</div>
+
+<script>
+  const DADOS = [
+    {
+      id: 'ativo', grupo: 'conv', label: '🙋 Sujeito ativo, não máquina',
+      titulo: 'A rejeição do homem como máquina',
+      resumo: 'Ambos desfazem o mito do homem-autômato: o sujeito age sobre o mundo e, ao transformá-lo, transforma-se a si mesmo.',
+      video: 'Skinner... parte do objetivo de Watson — estudar cientificamente o homem — mas chega a um homem como um ser em constante construção da sua história, um ser único, que não reage ao mundo mas age sobre o mundo, modificando o mundo e sendo por ele modificado.',
+      texto: 'O comportamento humano é uma relação: ele constrói o mundo à sua volta e, nesse processo, também está se construindo, pois as consequências (mudanças produzidas no mundo) de seu comportamento o alteram como um todo. [...] Assim, o homem é visto como sujeito ativo e não como receptáculo que sofre passivamente as influências do ambiente.',
+      v: 'Retroage, dialoga e impõe significados a partir da própria história.',
+      s: 'Crítica a Watson (E→R); o indivíduo produz comportamento.'
+    },
+    {
+      id: 'punicao', grupo: 'conv', label: '🚫 Crítica à punição e ao ensino aversivo',
+      titulo: 'Crítica severa à punição',
+      resumo: 'Punições, castigos e o excesso de erros geram respostas emocionais negativas que afastam o aluno da escola.',
+      video: '...a punição gera respostas emocionais colaterais extremamente malévolas ao homem: a resposta de ansiedade, de apreensão, de fobia, de pânico, que são incompatíveis com aprender... O errar é extremamente punitivo, extremamente aversivo; e um ensino com muitos erros, com muita tentativa e erro, gera consequências aversivas e, ao gerá-las, diminui a probabilidade das respostas.',
+      texto: 'A punição pode produzir efeitos colaterais indesejados, como esquiva e fuga das situações de ensino e, inclusive, da escola, como também pode gerar respostas emocionais, algumas delas componentes da ansiedade. [...] Quando o aluno comete muitos erros, isso pode desmotivar o aluno, afastando-o dos estudos. A rigor, errar tem caráter aversivo.',
+      v: 'A dificuldade pode ser produtiva (ver Divergências), mas o fracasso humilhante não.',
+      s: 'Substituir controle aversivo por reforço positivo planejado.'
+    },
+    {
+      id: 'gradual', grupo: 'conv', label: '🪜 Ensino gradual e modelagem',
+      titulo: 'Ensino gradual: do simples ao complexo',
+      resumo: 'Para substituir a punição, o ensino é dividido em passos pequenos, garantindo acertos frequentes e reforço positivo.',
+      video: 'Skinner descobriu a modelagem — que são aproximações sucessivas ao comportamento final desejado... arranjos de ensino tão graduais para quê? Para que, diante de cada etapa, o responder possa ocorrer sem grandes dificuldades.',
+      texto: 'O ensino deve ser planejado com base na definição de comportamentos [...] que deverão ser ordenados numa sequência do mais simples ao mais complexo. Esse caminhar indica que o processo de ensino pode ser mais efetivo se ocorrer de forma gradual.',
+      v: 'Mediação progressiva na ZDP (caminhar à frente do desenvolvimento).',
+      s: 'Modelagem por aproximações sucessivas + análise de tarefas.'
+    },
+    {
+      id: 'psi', grupo: 'conv', label: '🎯 Sistema Personalizado (PSI / nota 10)',
+      titulo: 'Ritmo individual e nota 10 para todos',
+      resumo: 'Parceria de Skinner com Fred Keller: todos aprendem se respeitado o ritmo de cada um, exigindo domínio de 100% de uma etapa antes de avançar.',
+      video: 'O Skinner, junto com o professor Fred Keller, criaram a partir dos princípios comportamentais o ensino individualizado... a questão de que cada aluno tenha o seu aprendizado no seu próprio ritmo... Se o aluno passou, ele tem 10. Então um princípio que está por trás é o de nota 10 a todos os seus alunos.',
+      texto: 'Outro exemplo é o trabalho de Keller (1972) no desenvolvimento do seu PSI [Sistema Personalizado de Instrução]: ritmo individualizado, permitindo ao aluno prosseguir com velocidade adequada à sua habilidade e à sua disponibilidade de tempo. [...] Requisito de perfeição em cada unidade para que o aluno possa prosseguir — ou seja, o aluno só poderá avançar quando demonstrar domínio completo da unidade precedente.',
+      v: 'Avaliação prospectiva, atenta ao que está "fervendo".',
+      s: 'PSI: ritmo próprio + domínio completo + previu o computador na educação.'
+    },
+    {
+      id: 'preconceito', grupo: 'conv', label: '🔎 Preconceito e má compreensão',
+      titulo: 'O preconceito sobre a teoria',
+      resumo: 'A Análise do Comportamento enfrenta barreiras por interpretações errôneas — confundida com o condicionamento mais rudimentar.',
+      video: 'Embora ele seja o psicólogo mais citado do século 20, é muito mal compreendido, porque as pessoas, num primeiro momento, o identificam com a psicologia do condicionamento respondente — o homem condicionado, o homem como um rato.',
+      texto: 'A insistência em classificar a abordagem comportamental à educação como tecnicista e redutora do homem [...] cria barreiras a um diálogo proveitoso e ao desenvolvimento e implementação de propostas viáveis.',
+      v: 'Vygotsky também é, por vezes, reduzido a slogans (só "ZDP").',
+      s: 'Skinner ≠ Watson; behaviorismo radical estuda também o encoberto.'
+    },
+    {
+      id: 'historias', grupo: 'conv', label: '🧬 Múltiplas histórias (planos genéticos)',
+      titulo: 'A constituição do sujeito por múltiplas histórias',
+      resumo: 'Ambos rejeitam explicações simplistas: o indivíduo se constitui na intersecção de diferentes níveis históricos.',
+      video: '',
+      texto: 'A biologia impõe limites (como a incapacidade de voar apenas com o corpo), mas a cultura e a história individual expandem essas possibilidades e definem a singularidade de cada pessoa.',
+      v: '4 planos: filogênese · ontogênese · sociogênese · microgênese.',
+      s: '3 histórias: filogenética · ontogenética · cultura.'
+    },
+    {
+      id: 'professor', grupo: 'conv', label: '🏫 Papel do professor e da escola',
+      titulo: 'O papel central do professor e da escola',
+      resumo: 'Os dois valorizam imensamente a instituição escolar e a intervenção deliberada do educador.',
+      video: '',
+      texto: 'Skinner chega a colocar os educadores como um "quarto poder" da sociedade, os únicos capazes de trabalhar ativamente pela sobrevivência e manutenção da espécie humana por meio da ciência do comportamento.',
+      v: 'A escola é fundamental ao funcionamento psíquico; a intervenção intencional puxa o desenvolvimento.',
+      s: 'A escola ideal forma cidadãos críticos, autônomos e conscientes.'
+    },
+    {
+      id: 'avaliacao', grupo: 'conv', label: '📝 Avaliação não punitiva',
+      titulo: 'Avaliação sem caráter autoritário',
+      resumo: 'Ambos retiram da avaliação a função de punir ou classificar.',
+      video: '',
+      texto: 'A avaliação não serve para separar o "joio do trigo" ou classificar alunos entre bons e maus: é apenas um teste natural para o professor descobrir se as condições de ensino que ele arranjou funcionaram.',
+      v: 'Olhar prospectivo: o que a criança faz hoje com ajuda, não só o que já domina.',
+      s: 'Todo aluno pode tirar a nota máxima se respeitado o seu ritmo.'
+    },
+    {
+      id: 'linguagem', grupo: 'conv', label: '🗣️ Eventos internos e linguagem',
+      titulo: 'Eventos internos e linguagem',
+      resumo: 'Apesar da fama, Skinner não ignora a mente; ambos dão enorme destaque à linguagem.',
+      video: '',
+      texto: 'Skinner considerava o ser humano de uma "complexidade ímpar" e não se limitou ao comportamento observável: analisou os "eventos encobertos" (pensamentos e emoções) e dedicou uma obra inteira à singularidade da linguagem humana — o comportamento verbal.',
+      v: 'Internalização dos signos: fala social → fala egocêntrica → discurso interior (base do pensamento).',
+      s: 'Eventos encobertos + comportamento verbal como conduta de complexidade ímpar.'
+    },
+    {
+      id: 'natureza', grupo: 'div', label: '↔️ Natureza da aprendizagem',
+      titulo: 'A natureza do processo de aprender',
+      resumo: 'A diferença de fundo: de onde vem e como se move a aprendizagem.',
+      video: '',
+      texto: 'Enquanto Vygotsky compreende a aprendizagem como internalização social (de "fora para dentro"), Skinner a define como aquisição individual de comportamentos governada pelo arranjo do ambiente.',
+      v: 'Apropriação cultural "de fora para dentro"; mediação simbólica; a aprendizagem PUXA o desenvolvimento (ZDP).',
+      s: 'Contingências de reforçamento; foco no arranjo do ambiente, não no mental (antimentalismo); relação funcional.'
+    },
+    {
+      id: 'erro', grupo: 'div', label: '⚡ O erro e a dificuldade',
+      titulo: 'O erro e a dificuldade: o ponto de maior divergência',
+      resumo: 'A frustração e o erro cognitivo são lidos de formas opostas.',
+      video: '',
+      texto: 'Para Skinner, o erro é aversivo e deve ser evitado; para Vygotsky, a dificuldade é catalisador do pensamento.',
+      v: 'Diante de um obstáculo (ex.: precisar de um banquinho), a fala egocêntrica ganha força e organiza o raciocínio. A dificuldade é gatilho do pensamento.',
+      s: 'O erro é punitivo e aversivo (gera ansiedade e evasão); o ensino deve ser tão gradual que o aluno acerte 100% antes de avançar.'
+    }
+  ];
+
+  // Posições radiais
+  const mapa = document.getElementById('mapa');
+  const svg = document.getElementById('linhas');
+  const CX = 550, CY = 390;
+  const convs = DADOS.filter(d => d.grupo === 'conv');
+  const divs = DADOS.filter(d => d.grupo === 'div');
+
+  // Nó central
+  const center = document.createElement('button');
+  center.className = 'node center';
+  center.innerHTML = 'Vygotsky<br>&amp;<br>Skinner';
+  center.style.left = CX + 'px'; center.style.top = CY + 'px';
+  center.onclick = () => mostrarInicial();
+  mapa.appendChild(center);
+
+  function criarNo(d, x, y) {
+    const linha = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    linha.setAttribute('x1', CX); linha.setAttribute('y1', CY);
+    linha.setAttribute('x2', x); linha.setAttribute('y2', y);
+    linha.setAttribute('stroke', d.grupo === 'conv' ? 'rgba(34,197,94,0.55)' : 'rgba(234,88,12,0.6)');
+    linha.setAttribute('stroke-width', '2.5');
+    svg.appendChild(linha);
+
+    const b = document.createElement('button');
+    b.className = 'node ' + d.grupo;
+    b.textContent = d.label;
+    b.style.left = x + 'px'; b.style.top = y + 'px';
+    b.onmouseenter = () => mostrar(d, b);
+    b.onfocus = () => mostrar(d, b);
+    b.onclick = () => mostrar(d, b);
+    mapa.appendChild(b);
+  }
+
+  // Convergências: arco superior (de ~200° a ~-20°, parte de cima e laterais)
+  const rConv = 320;
+  convs.forEach((d, i) => {
+    const ang = (-200 + (i * (220 / (convs.length - 1)))) * Math.PI / 180;
+    const x = CX + rConv * Math.cos(ang);
+    const y = CY + rConv * Math.sin(ang) * 0.92;
+    criarNo(d, x, Math.max(70, Math.min(710, y)));
+  });
+  // Divergências: parte inferior
+  const rDiv = 300;
+  divs.forEach((d, i) => {
+    const ang = (60 + i * 60) * Math.PI / 180;
+    const x = CX + rDiv * Math.cos(ang);
+    const y = CY + rDiv * Math.sin(ang) * 0.95;
+    criarNo(d, x, y);
+  });
+
+  function mostrar(d, btn) {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('ativo'));
+    if (btn) btn.classList.add('ativo');
+    document.getElementById('p-badge').textContent = d.grupo === 'conv' ? 'Convergência' : 'Divergência';
+    document.getElementById('p-badge').className = 'badge ' + d.grupo;
+    document.getElementById('p-titulo').textContent = d.titulo;
+    document.getElementById('p-dica').style.display = 'none';
+    let html = `<p class="resumo">${d.resumo}</p>`;
+    if (d.video) html += `<div class="quote video"><span class="src">🎬 No vídeo</span>“${d.video}”</div>`;
+    if (d.texto) html += `<div class="quote texto"><span class="src">📄 No texto</span>“${d.texto}”</div>`;
+    if (d.v || d.s) {
+      html += '<div class="lado">';
+      if (d.v) html += `<div class="box v"><h4>🟣 Vygotsky</h4>${d.v}</div>`;
+      if (d.s) html += `<div class="box s"><h4>🔶 Skinner</h4>${d.s}</div>`;
+      html += '</div>';
+    }
+    document.getElementById('p-conteudo').innerHTML = html;
+  }
+
+  function mostrarInicial() {
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('ativo'));
+    document.getElementById('p-badge').textContent = 'Comece aqui';
+    document.getElementById('p-badge').className = 'badge conv';
+    document.getElementById('p-titulo').innerHTML = 'Vygotsky &amp; Skinner';
+    document.getElementById('p-dica').style.display = 'block';
+    document.getElementById('p-conteudo').innerHTML = '';
+  }
+</script>
+
+</body>
+</html>

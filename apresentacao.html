@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vygotsky &amp; Skinner — Convergências e Divergências</title>
+<style>
+  :root {
+    --verde-1: #14532d;
+    --verde-2: #166534;
+    --verde-3: #15803d;
+    --verde-4: #22c55e;
+    --verde-soft: #f0fdf4;
+    --verde-soft2: #dcfce7;
+    --skinner: #f59e0b;
+    --skinner-soft: #fff7ed;
+    --vigotski: #8b5cf6;
+    --vigotski-soft: #f5f3ff;
+    --pink: #ec4899;
+    --blue: #2563eb;
+    --teal: #14b8a6;
+    --text: #1f2937;
+    --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0b3d24;
+    color: var(--text);
+    overflow: hidden;
+  }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+    padding: 4.5vh 6vw 8vh;
+    background: var(--verde-soft);
+    overflow-y: auto;
+  }
+  .slide.ativo { display: flex; animation: fade 0.4s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  /* Faixa superior */
+  .slide .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--verde-3);
+    margin-bottom: 0.6rem;
+  }
+  .slide h1 {
+    font-size: clamp(1.8rem, 4.5vw, 3.4rem);
+    color: var(--verde-1); line-height: 1.1; margin-bottom: 1rem;
+  }
+  .slide h2 {
+    font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+    color: var(--verde-2); line-height: 1.15; margin-bottom: 1.2rem;
+  }
+  .slide p { font-size: clamp(1rem, 1.8vw, 1.35rem); line-height: 1.5; margin-bottom: 0.8rem; max-width: 60ch; }
+  .slide ul { list-style: none; }
+  .slide li {
+    font-size: clamp(0.95rem, 1.7vw, 1.3rem);
+    line-height: 1.45; margin-bottom: 0.7rem; padding-left: 1.6rem;
+    position: relative;
+  }
+  .slide li::before {
+    content: '●'; position: absolute; left: 0; color: var(--verde-4); font-size: 0.8em; top: 0.25em;
+  }
+  strong { color: var(--verde-2); }
+
+  /* Capa */
+  .capa { background: linear-gradient(140deg, #0b3d24 0%, #166534 55%, #15803d 100%); color: #fff; justify-content: center; }
+  .capa .logo-strokes { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+  .capa .logo-strokes span { width: 10px; height: 46px; border-radius: 999px; display: inline-block; transform-origin: bottom; }
+  .capa h1 { color: #fff; font-size: clamp(2.2rem, 6vw, 4.5rem); }
+  .capa .sub { font-size: clamp(1.1rem, 2.5vw, 1.8rem); opacity: 0.92; margin-top: 0.5rem; }
+  .capa .tag { margin-top: 2rem; font-size: 0.95rem; opacity: 0.8; letter-spacing: 1px; }
+
+  /* Duas colunas autores */
+  .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 0.5rem; flex: 1; align-content: start; }
+  .col {
+    background: #fff; border-radius: 16px; padding: 1.4rem 1.6rem;
+    border-top: 8px solid;
+  }
+  .col.v { border-color: var(--vigotski); }
+  .col.s { border-color: var(--skinner); }
+  .col h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+  .col.v h3 { color: var(--vigotski); }
+  .col.s h3 { color: #b45309; }
+  .col li::before { color: currentColor; }
+  .col.v li::before { color: var(--vigotski); }
+  .col.s li::before { color: var(--skinner); }
+
+  /* Agenda */
+  .agenda { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem 2rem; margin-top: 1rem; }
+  .agenda .item {
+    display: flex; align-items: center; gap: 0.9rem;
+    background: #fff; border-radius: 12px; padding: 0.9rem 1.1rem;
+    font-size: clamp(0.95rem, 1.7vw, 1.25rem); border-left: 5px solid var(--verde-4);
+  }
+  .agenda .num {
+    background: var(--verde-3); color: #fff; min-width: 2rem; height: 2rem;
+    border-radius: 50%; display: grid; place-items: center; font-weight: 700;
+  }
+
+  /* Quadro comparativo */
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; background: #fff; border-radius: 12px; overflow: hidden; }
+  th, td { padding: 0.8rem 1rem; text-align: left; font-size: clamp(0.85rem, 1.5vw, 1.15rem); vertical-align: top; }
+  thead th { background: var(--verde-2); color: #fff; }
+  thead th.v { background: var(--vigotski); }
+  thead th.s { background: var(--skinner); }
+  tbody tr:nth-child(even) { background: var(--verde-soft); }
+  td.crit { font-weight: 700; color: var(--verde-2); }
+
+  /* Destaque box */
+  .destaque {
+    background: var(--verde-soft2); border-left: 6px solid var(--verde-3);
+    border-radius: 10px; padding: 1rem 1.3rem; margin-top: 1rem;
+    font-size: clamp(1rem, 1.8vw, 1.3rem); font-style: italic;
+  }
+  .pill-v { background: var(--vigotski-soft); color: var(--vigotski); padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8em; font-weight: 700; }
+  .pill-s { background: var(--skinner-soft); color: #b45309; padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.8em; font-weight: 700; }
+
+  /* Slide de citação/fecho */
+  .fecho { background: linear-gradient(140deg, #166534 0%, #14532d 100%); color: #fff; justify-content: center; }
+  .fecho h2 { color: #fff; }
+  .fecho p { font-size: clamp(1.1rem, 2.4vw, 1.7rem); max-width: 70ch; }
+
+  /* Navegação */
+  .nav {
+    position: fixed; bottom: 1.2rem; right: 1.5rem;
+    display: flex; align-items: center; gap: 0.5rem; z-index: 50;
+  }
+  .nav button {
+    background: rgba(255,255,255,0.9); border: 1px solid #d1d5db;
+    width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+    font-size: 1.1rem; color: var(--verde-2);
+  }
+  .nav .contador { color: #fff; font-size: 0.9rem; background: rgba(0,0,0,0.35); padding: 0.3rem 0.7rem; border-radius: 999px; }
+  .progresso { position: fixed; top: 0; left: 0; height: 5px; background: var(--verde-4); z-index: 60; transition: width 0.3s; }
+  .dica-teclas { position: fixed; bottom: 1.4rem; left: 1.5rem; color: rgba(255,255,255,0.55); font-size: 0.78rem; z-index: 50; }
+
+  @media (max-width: 700px) {
+    .duo, .agenda { grid-template-columns: 1fr; }
+    .slide { padding: 3vh 6vw 9vh; }
+  }
+
+  @media print {
+    body { overflow: visible; background: #fff; }
+    .deck { height: auto; }
+    .slide { display: flex !important; position: relative; height: 100vh; page-break-after: always; inset: auto; }
+    .nav, .progresso, .dica-teclas { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progresso" id="progresso"></div>
+<div class="deck" id="deck">
+
+  <!-- 1. CAPA -->
+  <section class="slide capa ativo">
+    <div class="logo-strokes">
+      <span style="background:var(--teal); transform: rotate(-25deg);"></span>
+      <span style="background:var(--verde-4); transform: rotate(-12deg);"></span>
+      <span style="background:var(--skinner); transform: rotate(0deg);"></span>
+      <span style="background:var(--pink); transform: rotate(12deg);"></span>
+      <span style="background:var(--blue); transform: rotate(25deg);"></span>
+    </div>
+    <h1>Vygotsky &amp; Skinner</h1>
+    <div class="sub">Convergências e divergências sobre o sujeito, a aprendizagem e a educação</div>
+    <div class="tag">Psicologia da Educação · Perspectiva Histórico-Cultural &amp; Análise do Comportamento</div>
+  </section>
+
+  <!-- 2. OS DOIS AUTORES -->
+  <section class="slide">
+    <span class="eyebrow">🟢 Ponto de partida</span>
+    <h2>Dois autores, um diálogo possível</h2>
+    <div class="duo">
+      <div class="col v">
+        <h3>🟣 Lev Vygotsky</h3>
+        <ul>
+          <li>Perspectiva <strong>histórico-cultural</strong></li>
+          <li>O humano se constitui na <strong>relação social</strong> e pela <strong>mediação simbólica</strong></li>
+          <li>A aprendizagem <strong>puxa</strong> o desenvolvimento</li>
+        </ul>
+      </div>
+      <div class="col s">
+        <h3>🔶 B. F. Skinner</h3>
+        <ul>
+          <li><strong>Análise do comportamento</strong> (behaviorismo radical)</li>
+          <li>O humano se constitui nas <strong>contingências</strong> do ambiente</li>
+          <li>Aprender = mudança produzida por <strong>consequências</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="destaque">Apesar de pressupostos distintos, há semelhanças profundas sobre o ser humano e a educação.</div>
+  </section>
+
+  <!-- 3. AGENDA / TEMAS EM COMUM -->
+  <section class="slide">
+    <span class="eyebrow">📌 Temas em comum</span>
+    <h2>Seis pontos de convergência</h2>
+    <div class="agenda">
+      <div class="item"><span class="num">1</span> Constituição do sujeito por múltiplas histórias</div>
+      <div class="item"><span class="num">2</span> Relação ativa entre indivíduo e meio</div>
+      <div class="item"><span class="num">3</span> Papel da educação e a mecânica do aprender</div>
+      <div class="item"><span class="num">4</span> Visão sobre o erro e a dificuldade</div>
+      <div class="item"><span class="num">5</span> Eventos internos e linguagem</div>
+      <div class="item"><span class="num">6</span> Avaliação e papel do professor</div>
+    </div>
+  </section>
+
+  <!-- 4. TEMA 1 -->
+  <section class="slide">
+    <span class="eyebrow">1 · Constituição do sujeito</span>
+    <h2>Múltiplas histórias de desenvolvimento</h2>
+    <p>Ambos rejeitam explicações simplistas: o indivíduo é formado pela <strong>intersecção de diferentes níveis históricos</strong>.</p>
+    <ul>
+      <li>A <strong>biologia impõe limites</strong> (não voamos só com o corpo)…</li>
+      <li>…mas a <strong>cultura e a história individual expandem possibilidades</strong> e definem a singularidade de cada pessoa.</li>
+    </ul>
+  </section>
+
+  <!-- 5. TEMA 1 - QUADRO -->
+  <section class="slide">
+    <span class="eyebrow">1 · Constituição do sujeito</span>
+    <h2>Os planos da história, lado a lado</h2>
+    <table>
+      <thead><tr><th class="v">🟣 Vygotsky — 4 planos genéticos</th><th class="s">🔶 Skinner — 3 histórias</th></tr></thead>
+      <tbody>
+        <tr><td>Filogênese (história da espécie)</td><td>História filogenética (da espécie)</td></tr>
+        <tr><td>Ontogênese (história do indivíduo)</td><td>História ontogenética (vida individual)</td></tr>
+        <tr><td>Sociogênese (história cultural)</td><td>Cultura</td></tr>
+        <tr><td>Microgênese (de um fenômeno psicológico específico)</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="destaque">Estrutura notavelmente semelhante: o sujeito é produto de história biológica, individual e cultural.</div>
+  </section>
+
+  <!-- 6. TEMA 2 -->
+  <section class="slide">
+    <span class="eyebrow">2 · Indivíduo e meio</span>
+    <h2>Um sujeito ativo, não passivo</h2>
+    <p>Nenhum dos dois vê o ser humano como uma <strong>"esponja"</strong> que absorve o ambiente.</p>
+    <div class="duo">
+      <div class="col v">
+        <h3>🟣 Vygotsky</h3>
+        <ul>
+          <li>O sujeito <strong>retroage</strong>, age sobre o ambiente</li>
+          <li><strong>Dialoga</strong> e impõe significados a partir de sua história</li>
+        </ul>
+      </div>
+      <div class="col s">
+        <h3>🔶 Skinner</h3>
+        <ul>
+          <li>Não confundir com Watson (E→R / autômato)</li>
+          <li>O homem <strong>"não reage ao mundo, mas age sobre o mundo, modificando-o e sendo por ele modificado"</strong></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. TEMA 3 INTRO -->
+  <section class="slide">
+    <span class="eyebrow">3 · Educação</span>
+    <h2>O papel da educação e a mecânica do aprender</h2>
+    <p>Ambos valorizam imensamente a <strong>escola</strong> e a <strong>intervenção do professor</strong> — mas explicam o <em>"como se aprende"</em> por caminhos diferentes.</p>
+    <div class="destaque">Vygotsky: de <strong>"fora para dentro"</strong> &nbsp;|&nbsp; Skinner: <strong>arranjo de contingências</strong></div>
+  </section>
+
+  <!-- 8. TEMA 3 VYGOTSKY -->
+  <section class="slide">
+    <span class="eyebrow">3 · Educação · <span class="pill-v">Vygotsky</span></span>
+    <h2>O movimento de "fora para dentro"</h2>
+    <ul>
+      <li>A <strong>aprendizagem promove o desenvolvimento</strong> (inverso de Piaget).</li>
+      <li><strong>Zona de Desenvolvimento Proximal (ZDP):</strong> distância entre o que a criança faz sozinha (real) e o que faz com ajuda de um parceiro mais experiente (potencial).</li>
+      <li>A <strong>intervenção pedagógica deliberada</strong> puxa o desenvolvimento para frente.</li>
+    </ul>
+  </section>
+
+  <!-- 9. TEMA 3 SKINNER -->
+  <section class="slide">
+    <span class="eyebrow">3 · Educação · <span class="pill-s">Skinner</span></span>
+    <h2>O arranjo de contingências</h2>
+    <ul>
+      <li>Aprender <strong>não depende de uma estrutura mental abstrata</strong> (rejeição ao mentalismo), mas das <strong>condições de ensino</strong>.</li>
+      <li>O professor planeja <strong>arranjos de ensino</strong> que propiciem consequências positivas naturais.</li>
+      <li><strong>Modelagem:</strong> dividir o ensino em passos graduais e <strong>aproximações sucessivas</strong>, para que o aprendizado ocorra sem grandes dificuldades.</li>
+    </ul>
+  </section>
+
+  <!-- 10. TEMA 4 - ERRO -->
+  <section class="slide">
+    <span class="eyebrow">4 · A grande divergência</span>
+    <h2>O erro e a dificuldade</h2>
+    <div class="duo">
+      <div class="col s">
+        <h3>🔶 Skinner repudia o erro</h3>
+        <ul>
+          <li>Ensaio e erro é <strong>aversivo e punitivo</strong></li>
+          <li>Fracasso gera <strong>ansiedade e evasão escolar</strong></li>
+          <li>Aprendizado deve ser <strong>suave e gradual</strong>: 100% de acerto antes de avançar</li>
+        </ul>
+      </div>
+      <div class="col v">
+        <h3>🟣 Vygotsky: dificuldade como gatilho</h3>
+        <ul>
+          <li>Diante de um obstáculo, a <strong>fala egocêntrica</strong> ganha força</li>
+          <li>A criança <strong>fala alto consigo mesma</strong> para organizar o raciocínio</li>
+          <li>A língua vira <strong>instrumento</strong> de suporte ao pensamento</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. TEMA 5 - LINGUAGEM -->
+  <section class="slide">
+    <span class="eyebrow">5 · Eventos internos</span>
+    <h2>Pensamento e linguagem</h2>
+    <div class="duo">
+      <div class="col s">
+        <h3>🔶 Skinner e os eventos encobertos</h3>
+        <ul>
+          <li>Não se atém só ao fisicamente observável</li>
+          <li>Estuda <strong>eventos encobertos</strong> (pensamentos, emoções)</li>
+          <li>Dedica uma obra inteira ao <strong>comportamento verbal</strong></li>
+        </ul>
+      </div>
+      <div class="col v">
+        <h3>🟣 Vygotsky e a internalização dos signos</h3>
+        <ul>
+          <li>A relação pensamento–linguagem define o psiquismo humano</li>
+          <li>Fala social → <strong>fala egocêntrica</strong> → <strong>discurso interior</strong></li>
+          <li>O discurso interior é a base do pensamento</li>
+        </ul>
+      </div>
+    </div>
+    <div class="destaque">Convergência que desmistifica Skinner: ele <strong>não ignora</strong> a mente.</div>
+  </section>
+
+  <!-- 12. TEMA 6 - AVALIAÇÃO -->
+  <section class="slide">
+    <span class="eyebrow">6 · Avaliação</span>
+    <h2>Avaliar sem punir nem classificar</h2>
+    <div class="duo">
+      <div class="col s">
+        <h3>🔶 Skinner</h3>
+        <ul>
+          <li><strong>Ensino individualizado</strong> (previu o computador na educação)</li>
+          <li>Todos podem tirar 10 no <strong>próprio ritmo</strong></li>
+          <li>Avaliar = checar se as <strong>condições de ensino</strong> funcionaram</li>
+        </ul>
+      </div>
+      <div class="col v">
+        <h3>🟣 Vygotsky</h3>
+        <ul>
+          <li>Olhar <strong>prospectivo</strong>, não só retrospectivo</li>
+          <li>Agir onde o desenvolvimento está <strong>"fervendo"</strong></li>
+          <li>Observar o que a criança faz <strong>com ajuda</strong></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 13. SÍNTESE DAS DIFERENÇAS -->
+  <section class="slide">
+    <span class="eyebrow">⚖️ Síntese</span>
+    <h2>Onde residem as diferenças</h2>
+    <table>
+      <thead><tr><th>Critério</th><th class="v">🟣 Vygotsky</th><th class="s">🔶 Skinner</th></tr></thead>
+      <tbody>
+        <tr><td class="crit">Natureza do processo</td><td>Apropriação cultural, de "fora para dentro"</td><td>Aquisição individual por contingências</td></tr>
+        <tr><td class="crit">Motor</td><td>Mediação simbólica e interação social</td><td>Consequências do comportamento</td></tr>
+        <tr><td class="crit">Aprendizagem × desenvolvimento</td><td>A aprendizagem puxa o desenvolvimento</td><td>Relação funcional comportamento–ambiente</td></tr>
+        <tr><td class="crit">Erro</td><td>Catalisador do pensamento</td><td>Aversivo: deve ser evitado</td></tr>
+        <tr><td class="crit">Ambiente</td><td>Social e mediado por signos</td><td>Planejado para garantir o acerto</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 14. FECHO -->
+  <section class="slide fecho">
+    <span class="eyebrow" style="color:#bbf7d0;">Em síntese</span>
+    <h2>Dois caminhos para a mesma aposta na educação</h2>
+    <p>Vygotsky compreende a aprendizagem como <strong style="color:#ddd6fe;">internalização social</strong>, em que o desafio e a interação expandem a mente.</p>
+    <p>Skinner a define como <strong style="color:#fde68a;">aquisição individual</strong>, governada por um ambiente cuidadosamente planejado para o acerto contínuo.</p>
+    <p style="margin-top:1rem;opacity:0.9;">Pressupostos diferentes, mecânicas distintas — mas a mesma convicção: <strong style="color:#fff;">a educação e o professor são decisivos no desenvolvimento humano.</strong></p>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev">‹</button>
+  <span class="contador" id="contador">1 / 14</span>
+  <button id="next">›</button>
+</div>
+<div class="dica-teclas">← → navegar · F tela cheia · P imprimir/PDF</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  let idx = 0;
+  const progresso = document.getElementById('progresso');
+  const contador = document.getElementById('contador');
+
+  function mostrar(n) {
+    idx = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, i) => s.classList.toggle('ativo', i === idx));
+    progresso.style.width = ((idx + 1) / slides.length * 100) + '%';
+    contador.textContent = (idx + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => mostrar(idx + 1);
+  document.getElementById('prev').onclick = () => mostrar(idx - 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); mostrar(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); mostrar(idx - 1); }
+    else if (e.key === 'Home') mostrar(0);
+    else if (e.key === 'End') mostrar(slides.length - 1);
+    else if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+    else if (e.key.toLowerCase() === 'p') window.print();
+  });
+  // Avançar tocando na metade direita / voltar na esquerda (mobile)
+  document.getElementById('deck').addEventListener('click', e => {
+    if (e.target.closest('.nav') || e.target.closest('a')) return;
+    const x = e.clientX / window.innerWidth;
+    if (x > 0.7) mostrar(idx + 1);
+    else if (x < 0.3) mostrar(idx - 1);
+  });
+  mostrar(0);
+</script>
+
+</body>
+</html>

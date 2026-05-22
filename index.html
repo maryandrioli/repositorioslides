@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vygotsky &amp; Skinner — Materiais da aula</title>
+<style>
+  :root {
+    --verde1: #14532d; --verde2: #166534; --verde3: #15803d; --verde4: #22c55e;
+    --verdeSoft: #f0fdf4; --verdeSoft2: #dcfce7;
+    --skinner: #f59e0b; --skinnerDk: #b45309; --skinnerSoft: #fff7ed;
+    --vigotski: #8b5cf6; --vigotskiDk: #6d28d9; --vigotskiSoft: #f5f3ff;
+    --text: #1f2937; --muted: #6b7280;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--verdeSoft); color: var(--text); line-height: 1.55;
+  }
+  header {
+    background: linear-gradient(140deg, #0b3d24 0%, #166534 55%, #15803d 100%);
+    color: #fff; padding: 2.6rem 1.5rem 2.2rem; text-align: center; position: relative;
+  }
+  .strokes { display: flex; gap: 5px; justify-content: center; margin-bottom: 1rem; }
+  .strokes span { width: 9px; height: 38px; border-radius: 999px; display: inline-block; }
+  header h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
+  header p { opacity: 0.92; margin-top: 0.5rem; font-size: 1rem; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.3rem 4rem; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+  .card {
+    background: #fff; border-radius: 16px; overflow: hidden; text-decoration: none;
+    color: var(--text); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.18s, box-shadow 0.18s; display: flex; flex-direction: column;
+    border-top: 6px solid var(--verde3);
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.16); }
+  .card .topo { padding: 2rem 1.5rem 1.2rem; text-align: center; }
+  .card .icone { font-size: 3rem; }
+  .card h2 { font-size: 1.4rem; color: var(--verde1); margin: 0.6rem 0 0.3rem; }
+  .card p { font-size: 0.92rem; color: var(--muted); padding: 0 1.5rem 1.2rem; flex-grow: 1; }
+  .card .acao {
+    background: var(--verde3); color: #fff; text-align: center;
+    padding: 0.8rem; font-weight: 600; font-size: 0.95rem;
+  }
+  .card.mapa { border-top-color: var(--vigotski); }
+  .card.mapa h2 { color: var(--vigotskiDk); }
+  .card.mapa .acao { background: var(--vigotski); }
+
+  .extra {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem;
+  }
+  .extra a {
+    background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
+    padding: 0.7rem 1.2rem; text-decoration: none; color: var(--verde2);
+    font-weight: 600; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .extra a:hover { background: var(--verdeSoft2); }
+
+  section.refs {
+    background: #fff; border-radius: 16px; padding: 1.8rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  section.refs h2 {
+    color: var(--verde1); border-bottom: 3px solid var(--verde3);
+    padding-bottom: 0.5rem; display: inline-block; margin-bottom: 1.2rem;
+  }
+  .bloco { border-left: 5px solid; border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
+  .bloco.skinner { border-color: var(--skinner); background: var(--skinnerSoft); }
+  .bloco.vigotski { border-color: var(--vigotski); background: var(--vigotskiSoft); }
+  .bloco h3 { font-size: 1.1rem; margin-bottom: 0.7rem; }
+  .bloco.skinner h3 { color: var(--skinnerDk); }
+  .bloco.vigotski h3 { color: var(--vigotskiDk); }
+  .bloco h4 {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); margin: 0.6rem 0 0.3rem;
+  }
+  .bloco ul { list-style: none; }
+  .bloco li { margin-bottom: 0.4rem; font-size: 0.92rem; padding-left: 1.2rem; position: relative; }
+  .bloco li::before { content: '•'; position: absolute; left: 0; color: currentColor; }
+  .bloco.skinner li::before { color: var(--skinner); }
+  .bloco.vigotski li::before { color: var(--vigotski); }
+  .bloco a { color: var(--verde2); word-break: break-word; }
+  .destaque-nb {
+    background: var(--verdeSoft2); border-left: 5px solid var(--verde3);
+    border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem; font-size: 0.92rem;
+  }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem; }
+
+  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="strokes">
+    <span style="background:#14b8a6; transform:rotate(-25deg);"></span>
+    <span style="background:#22c55e; transform:rotate(-12deg);"></span>
+    <span style="background:#f59e0b;"></span>
+    <span style="background:#ec4899; transform:rotate(12deg);"></span>
+    <span style="background:#2563eb; transform:rotate(25deg);"></span>
+  </div>
+  <h1>Vygotsky &amp; Skinner</h1>
+  <p>Materiais da aula — Psicologia da Educação · Histórico-Cultural &amp; Análise do Comportamento</p>
+</header>
+
+<main>
+  <div class="cards">
+    <a class="card" href="apresentacao.html">
+      <div class="topo">
+        <div class="icone">📊</div>
+        <h2>Apresentação de slides</h2>
+      </div>
+      <p>14 slides com as convergências e divergências entre os dois autores. Navegue por setas, espaço ou toque; tecla F para tela cheia.</p>
+      <div class="acao">▶️ Abrir apresentação</div>
+    </a>
+
+    <a class="card mapa" href="mapa_mental.html">
+      <div class="topo">
+        <div class="icone">🧠</div>
+        <h2>Mapa mental interativo</h2>
+      </div>
+      <p>Passe o mouse ou toque em cada conceito para ampliar a explicação e ler os trechos exatos do vídeo e do texto.</p>
+      <div class="acao">▶️ Abrir mapa mental</div>
+    </a>
+  </div>
+
+  <div class="extra">
+    <a href="Vygotsky_Skinner.pptx" download>⬇️ Baixar slides em PowerPoint (.pptx)</a>
+    <a href="../entrecards.html">🃏 Ir para o EntreCards</a>
+  </div>
+
+  <section class="refs">
+    <h2>📖 Referências e vídeos</h2>
+
+    <div class="bloco skinner">
+      <h3>🔶 Bloco Skinner — Behaviorismo / Análise do Comportamento</h3>
+      <h4>Leituras</h4>
+      <ul>
+        <li>HENKLAIN, M. H. O.; CARMO, J. dos S. <em>Contribuições da análise do comportamento à educação: um convite ao diálogo.</em></li>
+        <li>CUNHA, M. V. <em>Pavlov, Watson e Skinner.</em></li>
+      </ul>
+      <h4>Vídeo</h4>
+      <ul>
+        <li>🎬 Behaviorismo — <a href="https://www.youtube.com/watch?v=0Hn9dN1_W4U" target="_blank" rel="noopener">youtube.com/watch?v=0Hn9dN1_W4U</a></li>
+      </ul>
+    </div>
+
+    <div class="bloco vigotski">
+      <h3>🟣 Bloco Vigotski — Perspectiva Histórico-Cultural</h3>
+      <h4>Leituras</h4>
+      <ul>
+        <li><em>Vigotski e o processo de formação de conceitos.</em></li>
+        <li>VIGOTSKI, L. S. <em>A defectologia e o estudo do desenvolvimento.</em></li>
+      </ul>
+      <h4>Vídeo</h4>
+      <ul>
+        <li>🎬 Vigotski — <a href="https://www.youtube.com/watch?v=T1sDZNSTuyE" target="_blank" rel="noopener">youtube.com/watch?v=T1sDZNSTuyE</a></li>
+      </ul>
+    </div>
+
+    <div class="destaque-nb">
+      🔊 <strong>NotebookLM</strong> (síntese e áudio dos materiais):
+      <a href="https://notebooklm.google.com/notebook/e5246db2-9b73-45ed-8fcf-84c09c5a70a2" target="_blank" rel="noopener">abrir caderno</a>
+    </div>
+  </section>
+</main>
+
+<footer>Vygotsky &amp; Skinner · Materiais didáticos</footer>
+
+</body>
+</html>
