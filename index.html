@@ -6,99 +6,91 @@
 <title>Vygotsky &amp; Skinner — Materiais da aula</title>
 <style>
   :root {
-    --verde1: #14532d; --verde2: #166534; --verde3: #15803d; --verde4: #22c55e;
-    --verdeSoft: #f0fdf4; --verdeSoft2: #dcfce7;
-    --skinner: #f59e0b; --skinnerDk: #b45309; --skinnerSoft: #fff7ed;
-    --vigotski: #8b5cf6; --vigotskiDk: #6d28d9; --vigotskiSoft: #f5f3ff;
-    --text: #1f2937; --muted: #6b7280;
+    --verde: #1aa35e; --verdeD: #15803d; --verdeL: #e8f7ee; --verdeL2: #f4fbf7;
+    --teal: #2bb3a3; --laranja: #f08a24;
+    --magenta: #db2777; --magentaL: #fce7f1; --magentaD: #9d174d;
+    --azul: #2563eb; --azulD: #1e40af;
+    --vigotski: #8b5cf6; --vigotskiD: #6d28d9;
+    --skinner: #f08a24; --skinnerD: #b45309;
+    --text: #1f2937; --muted: #6b7280; --linha: #e5e7eb;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--verdeSoft); color: var(--text); line-height: 1.55;
-  }
-  header {
-    background: linear-gradient(140deg, #0b3d24 0%, #166534 55%, #15803d 100%);
-    color: #fff; padding: 2.6rem 1.5rem 2.2rem; text-align: center; position: relative;
-  }
-  .strokes { display: flex; gap: 5px; justify-content: center; margin-bottom: 1rem; }
-  .strokes span { width: 9px; height: 38px; border-radius: 999px; display: inline-block; }
-  header h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); }
-  header p { opacity: 0.92; margin-top: 0.5rem; font-size: 1rem; }
-  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.3rem 4rem; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #ffffff; color: var(--text); line-height: 1.55; }
 
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+  header { text-align: center; padding: 2.6rem 1.5rem 2rem; border-bottom: 1px solid var(--linha); background: #fff; }
+  .strokes { display: flex; gap: 5px; justify-content: center; margin-bottom: 1rem; }
+  .strokes span { width: 9px; height: 40px; border-radius: 999px; display: inline-block; }
+  header h1 { font-size: clamp(1.9rem, 4vw, 2.9rem); color: var(--verdeD); }
+  header p { color: var(--muted); margin-top: 0.5rem; font-size: 1rem; }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 2.2rem 1.3rem 4rem; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; margin-bottom: 2.5rem; }
   .card {
-    background: #fff; border-radius: 16px; overflow: hidden; text-decoration: none;
-    color: var(--text); box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    transition: transform 0.18s, box-shadow 0.18s; display: flex; flex-direction: column;
-    border-top: 6px solid var(--verde3);
+    background: #fff; border: 1px solid var(--linha); border-radius: 16px; overflow: hidden;
+    text-decoration: none; color: var(--text); display: flex; flex-direction: column;
+    transition: transform 0.18s, box-shadow 0.18s; border-top: 6px solid var(--verde);
   }
-  .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.16); }
-  .card .topo { padding: 2rem 1.5rem 1.2rem; text-align: center; }
-  .card .icone { font-size: 3rem; }
-  .card h2 { font-size: 1.4rem; color: var(--verde1); margin: 0.6rem 0 0.3rem; }
-  .card p { font-size: 0.92rem; color: var(--muted); padding: 0 1.5rem 1.2rem; flex-grow: 1; }
-  .card .acao {
-    background: var(--verde3); color: #fff; text-align: center;
-    padding: 0.8rem; font-weight: 600; font-size: 0.95rem;
+  .card:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,0.12); }
+  .card .topo { padding: 2rem 1.4rem 0.8rem; text-align: center; }
+  .card .icone {
+    width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 0.8rem;
+    display: grid; place-items: center; font-size: 2.2rem; background: var(--verdeL);
   }
+  .card h2 { font-size: 1.25rem; color: var(--verdeD); margin-bottom: 0.3rem; }
+  .card p { font-size: 0.9rem; color: var(--muted); padding: 0 1.4rem 1.3rem; flex-grow: 1; text-align: center; }
+  .card .acao { background: var(--verde); color: #fff; text-align: center; padding: 0.85rem; font-weight: 600; font-size: 0.95rem; }
+
   .card.mapa { border-top-color: var(--vigotski); }
-  .card.mapa h2 { color: var(--vigotskiDk); }
+  .card.mapa .icone { background: #f1ecfe; }
+  .card.mapa h2 { color: var(--vigotskiD); }
   .card.mapa .acao { background: var(--vigotski); }
 
-  .extra {
-    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem;
-  }
+  .card.critico { border-top-color: var(--magenta); }
+  .card.critico .icone { background: var(--magentaL); }
+  .card.critico h2 { color: var(--magentaD); }
+  .card.critico .acao { background: linear-gradient(90deg, var(--magenta) 0 50%, var(--azul) 50% 100%); }
+
+  .extra { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
   .extra a {
-    background: #fff; border: 1px solid #d1d5db; border-radius: 10px;
-    padding: 0.7rem 1.2rem; text-decoration: none; color: var(--verde2);
+    background: #fff; border: 1px solid var(--linha); border-radius: 10px;
+    padding: 0.7rem 1.2rem; text-decoration: none; color: var(--verdeD);
     font-weight: 600; font-size: 0.92rem; display: inline-flex; align-items: center; gap: 0.5rem;
   }
-  .extra a:hover { background: var(--verdeSoft2); }
+  .extra a:hover { background: var(--verdeL); border-color: var(--verde); }
 
-  section.refs {
-    background: #fff; border-radius: 16px; padding: 1.8rem; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  }
-  section.refs h2 {
-    color: var(--verde1); border-bottom: 3px solid var(--verde3);
-    padding-bottom: 0.5rem; display: inline-block; margin-bottom: 1.2rem;
-  }
-  .bloco { border-left: 5px solid; border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.2rem; }
-  .bloco.skinner { border-color: var(--skinner); background: var(--skinnerSoft); }
-  .bloco.vigotski { border-color: var(--vigotski); background: var(--vigotskiSoft); }
-  .bloco h3 { font-size: 1.1rem; margin-bottom: 0.7rem; }
-  .bloco.skinner h3 { color: var(--skinnerDk); }
-  .bloco.vigotski h3 { color: var(--vigotskiDk); }
-  .bloco h4 {
-    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px;
-    color: var(--muted); margin: 0.6rem 0 0.3rem;
-  }
+  section.refs { background: var(--verdeL2); border: 1px solid var(--linha); border-radius: 16px; padding: 1.8rem; }
+  section.refs h2 { color: var(--verdeD); display: inline-block; margin-bottom: 1.2rem; font-size: 1.4rem; }
+  .bloco { border-left: 5px solid; border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.1rem; background: #fff; }
+  .bloco.skinner { border-color: var(--skinner); }
+  .bloco.vigotski { border-color: var(--vigotski); }
+  .bloco h3 { font-size: 1.08rem; margin-bottom: 0.6rem; }
+  .bloco.skinner h3 { color: var(--skinnerD); }
+  .bloco.vigotski h3 { color: var(--vigotskiD); }
+  .bloco h4 { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 0.6rem 0 0.3rem; }
   .bloco ul { list-style: none; }
   .bloco li { margin-bottom: 0.4rem; font-size: 0.92rem; padding-left: 1.2rem; position: relative; }
-  .bloco li::before { content: '•'; position: absolute; left: 0; color: currentColor; }
+  .bloco li::before { content: '•'; position: absolute; left: 0; }
   .bloco.skinner li::before { color: var(--skinner); }
   .bloco.vigotski li::before { color: var(--vigotski); }
-  .bloco a { color: var(--verde2); word-break: break-word; }
-  .destaque-nb {
-    background: var(--verdeSoft2); border-left: 5px solid var(--verde3);
-    border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 1rem; font-size: 0.92rem;
-  }
+  .bloco a { color: var(--verdeD); word-break: break-word; }
+  .destaque-nb { background: var(--verdeL); border-left: 5px solid var(--verde); border-radius: 8px; padding: 0.9rem 1.2rem; margin-top: 0.6rem; font-size: 0.92rem; }
+  .destaque-nb a { color: var(--verdeD); font-weight: 600; }
 
-  footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem; }
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.5rem; border-top: 1px solid var(--linha); }
 
-  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+  @media (max-width: 880px) { .cards { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <header>
   <div class="strokes">
-    <span style="background:#14b8a6; transform:rotate(-25deg);"></span>
-    <span style="background:#22c55e; transform:rotate(-12deg);"></span>
-    <span style="background:#f59e0b;"></span>
-    <span style="background:#ec4899; transform:rotate(12deg);"></span>
-    <span style="background:#2563eb; transform:rotate(25deg);"></span>
+    <span style="background:var(--teal); transform:rotate(-25deg);"></span>
+    <span style="background:var(--verde); transform:rotate(-12deg);"></span>
+    <span style="background:var(--laranja);"></span>
+    <span style="background:var(--magenta); transform:rotate(12deg);"></span>
+    <span style="background:var(--azul); transform:rotate(25deg);"></span>
   </div>
   <h1>Vygotsky &amp; Skinner</h1>
   <p>Materiais da aula — Psicologia da Educação · Histórico-Cultural &amp; Análise do Comportamento</p>
@@ -111,17 +103,26 @@
         <div class="icone">📊</div>
         <h2>Apresentação de slides</h2>
       </div>
-      <p>14 slides com as convergências e divergências entre os dois autores. Navegue por setas, espaço ou toque; tecla F para tela cheia.</p>
+      <p>14 slides com as convergências e divergências entre os dois autores. Setas, espaço ou toque para navegar; F para tela cheia.</p>
       <div class="acao">▶️ Abrir apresentação</div>
     </a>
 
     <a class="card mapa" href="mapa_mental.html">
       <div class="topo">
         <div class="icone">🧠</div>
-        <h2>Mapa mental interativo</h2>
+        <h2>Mapa mental: convergências</h2>
       </div>
       <p>Passe o mouse ou toque em cada conceito para ampliar a explicação e ler os trechos exatos do vídeo e do texto.</p>
       <div class="acao">▶️ Abrir mapa mental</div>
+    </a>
+
+    <a class="card critico" href="mapa_critico.html">
+      <div class="topo">
+        <div class="icone">⚖️</div>
+        <h2>Mapa: críticas &amp; defesas</h2>
+      </div>
+      <p>Confronto entre as <strong>críticas</strong> ao behaviorismo (magenta) e as <strong>defesas</strong> a Skinner (azul), com os trechos completos das fontes.</p>
+      <div class="acao">▶️ Abrir mapa crítico</div>
     </a>
   </div>
 
